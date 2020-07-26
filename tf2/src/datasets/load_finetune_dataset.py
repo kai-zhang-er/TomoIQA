@@ -76,27 +76,31 @@ class DataGenerator(keras.utils.Sequence):
         distortion_level=len(blur_sigma)
         image_batch=[]
         score_batch=[]
-        
-        image_batch.append(crop_img)
-        score_batch.append(self.score_dict[ori_image_name])
+        if self.score_dict.__contains__(ori_image_name):
+            image_batch.append(crop_img)
+            score_batch.append(self.score_dict[ori_image_name])
 
         for j in range(distortion_level):
             blur_crop=filters.gaussian(crop_img,sigma=blur_sigma[j],multichannel=True)
-            image_batch.append(blur_crop)
             temp_name="{}_{}_0_0.bmp".format(ori_image_name[:3],j+1)
-            score_batch.append(self.score_dict[temp_name])
-            
-        image_batch.append(crop_img)
-        score_batch.append(self.score_dict[ori_image_name])
+            if self.score_dict.__contains__(temp_name):
+                image_batch.append(blur_crop)
+                score_batch.append(self.score_dict[temp_name])
+
+        if self.score_dict.__contains__(ori_image_name):
+            image_batch.append(crop_img)
+            score_batch.append(self.score_dict[ori_image_name])
     
         for j in range(distortion_level):
             noise_crop = util.random_noise(crop_img, var=noise_variance[j])
-            image_batch.append(noise_crop)
             temp_name="{}_0_{}_0.bmp".format(ori_image_name[:3],j+1)
-            score_batch.append(self.score_dict[temp_name])
+            if self.score_dict.__contains__(temp_name):
+                image_batch.append(noise_crop)
+                score_batch.append(self.score_dict[temp_name])
 
-        image_batch.append(crop_img)
-        score_batch.append(self.score_dict[ori_image_name])
+      if self.score_dict.__contains__(ori_image_name):
+            image_batch.append(crop_img)
+            score_batch.append(self.score_dict[ori_image_name])
         
         for j in range(distortion_level):
             ring_radius = 5
@@ -118,11 +122,12 @@ class DataGenerator(keras.utils.Sequence):
                     ring_crop[rr2, cc2] -= ring_artifact[j] * temp[rr2, cc2]
             ring_crop[ring_crop > 1] = 1
             ring_crop[ring_crop < 0] = 0
-            image_batch.append(ring_crop)
-            temp_name="{}_0_0_{}.bmp".format(ori_image_name[:3],j+1)
-            score_batch.append(self.score_dict[temp_name])
 
-        assert(len(image_batch)==18)
+            temp_name="{}_0_0_{}.bmp".format(ori_image_name[:3],j+1)
+            if self.score_dict.__contains__(temp_name):
+                image_batch.append(ring_crop)
+                score_batch.append(self.score_dict[temp_name])
+
         return np.array(image_batch), np.array(score_batch)
 
 def check_params(params):
