@@ -3,14 +3,14 @@ Image quality assessment for tomography images.
 
 ## Folder structure
 ```
-.							# project use the tensorflow 2.x
+.				# project use the tensorflow 2.x
 ├── datset
-│   ├── origin  			# Origin images
-│   ├── distorted   		# generated distorted images
-│   ├── config   			# txt files for training and testing
-│   ├── testset 			# directory for prediction
-├── tf1                    	# project use the tensorflow 1.x
-├── metrics  				# used for label projection
+│   ├── origin			# Origin images
+│   ├── distorted		# generated distorted images
+│   ├── config			# txt files for training and testing
+│   ├── testset			# directory for prediction
+├── tf1				# project use the tensorflow 1.x
+├── metrics			# used for label projection
 └── ...	
 ```
 ## Installation
