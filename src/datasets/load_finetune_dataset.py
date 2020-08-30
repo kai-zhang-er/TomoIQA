@@ -33,12 +33,13 @@ class DataGenerator(keras.utils.Sequence):
         # store input as class variables
         self.batch_size = self.param_str['batch_size']
         self.root_dir = self.param_str['root_dir']
-        self.data_dir = self.param_str['data_root']
+        self.data_dir = self.root_dir+"dataset/distorted/"
         self.im_shape = self.param_str['im_shape']
 
         # get list of image indexes.
         list_file = self.param_str['split'] + '.txt'
-        filename = [line.rstrip('\n') for line in open(osp.join(self.root_dir,self.data_dir, list_file)).readlines()]
+        txt_file=self.root_dir+"dataset/config/"+list_file
+        filename = [line.rstrip('\n') for line in open(txt_file).readlines()]
         self.image_path = []
         self.score_dict={}
         for i in filename:
@@ -98,7 +99,7 @@ class DataGenerator(keras.utils.Sequence):
                 image_batch.append(noise_crop)
                 score_batch.append(self.score_dict[temp_name])
 
-      if self.score_dict.__contains__(ori_image_name):
+        if self.score_dict.__contains__(ori_image_name):
             image_batch.append(crop_img)
             score_batch.append(self.score_dict[ori_image_name])
         

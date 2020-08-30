@@ -1,0 +1,34 @@
+{
+"root_dir" : "/content/drive/My Drive/pyIQA/",
+"data_root_dir":"dataset/",
+"origin_data_dir":"dataset/origin/",
+"save_distorted_dir":"dataset/distorted/",
+"test_dir":"dataset/testset/",
+"config_dir":"dataset/config/",
+
+"resized_size":250,
+"crop_size":224,
+"distortion_level":5,
+"ring_width":2,
+"ring_number":20,
+
+"blur_sigma" : [1.2, 2.5, 6.5, 15.2, 33.2],
+"noise_variance" : [0.001, 0.006, 0.022, 0.088, 1.00],
+"coefficients":[0.1,0.13,0.15,0.18,0.2],
+
+"pretrained_model_path":"experiments/vgg_models/vgg16_weights.npz",
+"rank_model_name":"rank",
+"save_ckpt_dir": "experiments/TOMO/",
+"rank_logs_dir":"experiments/train/",
+"rank_train_epochs":200,
+"rank_test_epochs":10,
+"rank_learning_rate":5e-5,
+"batch_size":18,
+
+"finetune_model_name":"finetune",
+"finetune_logs_dir":"experiments/finetune/",
+"finetune_train_epochs":200,
+"finetune_test_epochs":10,
+"finetune_learning_rate":5e-5,
+"finetune_start_learning_rate":1e-6
+}

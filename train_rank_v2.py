@@ -1,37 +1,21 @@
 import os
-
 import tensorflow as tf
-
 from src.datasets.load_dataset import DataGenerator
 from src.net.model_v2 import VGGIQAModel
 from tensorflow.keras import optimizers
+from utils import ex
 
 
-experiment_name = os.path.splitext(__file__.split('/')[-1])[0]
-
-pretrained_model_path="experiments/vgg_models/"+'vgg16_weights.npz'
-root_dir = "/content/drive/My Drive/pyIQA/"
-data_dir = "TOMO/"
-train_list = 'train_info'
-test_list = 'test_info'
-exp_name = "rankiqa2"
-save_ckpt_dir = "experiments/TOMO/" + exp_name + "/"
-logs_dir="experiments/train/"
-os.makedirs(save_ckpt_dir,exist_ok=True)
-train_epochs=200
-test_epochs=10
-learning_rate=5e-5
-batch_size=18
-
-
+@ ex.capture
 def scheduler(epoch):
-    if epoch < train_epochs* 0.4:
-        return learning_rate
-    if epoch < train_epochs * 0.8:
-        return learning_rate * 0.2
-    return learning_rate * 0.04
+    if epoch < rank_train_epochs* 0.4:
+        return rank_learning_rate
+    if epoch < rank_train_epochs * 0.8:
+        return rank_learning_rate * 0.2
+    return rank_learning_rate * 0.04
 
 
+@ex.capture
 def get_rankloss(y_true, y_pred):
     """The forward """
     num = 0
@@ -57,13 +41,18 @@ def get_rankloss(y_true, y_pred):
     return loss
 
 
+@ ex.main
 def train():
-    training_generator = DataGenerator({'root_dir': root_dir, 'data_root': data_dir, 'split': train_list, 'im_shape': [224, 224],'batch_size': batch_size})
-    testing_generator = DataGenerator({'root_dir': root_dir, 'data_root': data_dir, 'split': test_list, 'im_shape': [224, 224],'batch_size': batch_size})
+    save_ckpt_dir = save_ckpt_dir + rank_model_name + "/"
+    os.makedirs(save_ckpt_dir,exist_ok=True)
+
+    # config the dataset loader, image size is set at 224*224
+    training_generator = DataGenerator({'root_dir': root_dir, 'data_root': save_distorted_dir, 'split': 'train_info', 'im_shape': [crop_size, crop_size],'batch_size': batch_size})
+    testing_generator = DataGenerator({'root_dir': root_dir, 'data_root': save_distorted_dir, 'split': 'test_info', 'im_shape': [crop_size, crop_size],'batch_size': batch_size})
 
     model = VGGIQAModel(is_training=True)
     model.summary()
-    adam = optimizers.Adam(learning_rate=learning_rate)
+    adam = optimizers.Adam(learning_rate=rank_learning_rate)
     change_lr = tf.keras.callbacks.LearningRateScheduler(scheduler)
     model.compile(loss=get_rankloss, optimizer=adam, metrics=[get_rankloss])
     checkpoint_path=save_ckpt_dir+'model.h5'
@@ -72,12 +61,9 @@ def train():
     my_callbacks = [
         change_lr,
         checkpointer,
-        tf.keras.callbacks.TensorBoard(log_dir=logs_dir),
+        tf.keras.callbacks.TensorBoard(log_dir=rank_logs_dir),
     ]
-    model.fit_generator(generator=training_generator,epochs=train_epochs,
-                        validation_data=testing_generator,validation_steps=test_epochs,
+    model.fit_generator(generator=training_generator,epochs=rank_train_epochs,
+                        validation_data=testing_generator,validation_steps=rank_test_epochs,
                         callbacks=my_callbacks)
     tf.print("finish")
-
-if __name__=="__main__":
-    train()
