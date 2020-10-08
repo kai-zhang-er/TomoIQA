@@ -1,5 +1,5 @@
 # TomoIQA
-Image quality assessment for tomography images.
+Image quality assessment for tomography images. The corresponding documents can be found in [TomoIQA_report](https://summerof15.github.io/publications/files/TomoIQA_report.pdf) and [TomoIQA_slides](https://summerof15.github.io/publications/files/TomoIQA_slides.pdf)
 
 ## Folder structure
 ```
