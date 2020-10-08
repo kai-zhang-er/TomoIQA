@@ -22,11 +22,11 @@ pip install tensorflow, sacred
 ```
 
 ## Usage
-Only a sample is currenntly provided in this project. The whole dataset will be provided in the future.
+Only the sample dataset is currenntly provided in this project. The whole dataset will be provided in the future.
 
 ### Dataset preparation
 
-1. Modify the `config.json` file to costomize the configuration of the project
+1. Modify the `config.json` file to customize the configuration of the project
 2. put the original image in `dataset/origin/` and generate the distorted images
 ```bash
 python add_distortion.py
